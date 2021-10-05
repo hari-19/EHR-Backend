@@ -1,3 +1,4 @@
-export const helloWorldController = (req: any, res: any, next: any) => {
-    res.next("Hello World");
+import {Request, Response } from "express";
+export const helloWorldController = (req: Request, res: Response, next: any) => {
+    res.json({ data: "Hello World" });
 }

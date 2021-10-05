@@ -13,17 +13,18 @@
   "dependencies": {
     "@types/bunyan": "^1.8.7",
     "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
     "bunyan": "^1.8.15",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
-    "http-errors": "~1.6.3"
+    "http-errors": "~1.6.3",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/debug": "^4.1.7",
     "@types/http-errors": "^1.8.1",
-    "@types/morgan": "^1.9.3",
     "@types/node": "^16.10.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
