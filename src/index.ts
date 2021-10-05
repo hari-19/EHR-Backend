@@ -9,13 +9,15 @@
 //  ('ehr-backend:server');
  import http from 'http';
  import bunyan from 'bunyan';
+ import dotenv from 'dotenv';
+
+ dotenv.config();
 
  /**
   * Get port from environment and store in Express.
   */
 
  const log = bunyan.createLogger({name : 'EHR' })
-
  const port = normalizePort(process.env.PORT || '9000');
  app.set('port', port);
 
