@@ -10,6 +10,7 @@
  import http from 'http';
  import bunyan from 'bunyan';
  import dotenv from 'dotenv';
+ import mongoose from 'mongoose';
 
  dotenv.config();
 
@@ -31,10 +32,7 @@
   * Listen on provided port, on all network interfaces.
   */
 
- server.listen(port, ()=> {
-     log.info("Started Server on port " + port);
-//    console.log("Server started on port " + port);
- });
+ server.listen(port);
  server.on('error', onError);
  server.on('listening', onListening);
 
@@ -96,4 +94,12 @@
      ? 'pipe ' + addr
      : 'port ' + addr.port;
    debug('Listening on ' + bind);
+
+   /**
+    * Connect to database
+    */
+    mongoose.Promise = global.Promise;
+    mongoose.connect(process.env.DB_URL).then(() => {
+      log.info("Started Server on port " + port);
+    });
  }
