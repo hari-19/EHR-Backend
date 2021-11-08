@@ -21,21 +21,5 @@ router.post('/decry', encryptionController.decrypt);
 router.post('/enc1', encryptionController.aEncrypt);
 router.post('/decry1', encryptionController.aDecrypt);
 router.get('/key', encryptionController.genKey);
-router.get('/temp', async (req, res, next) => {
-    try {
-
-        const data: UserSchema = {
-            _id: uuidv4(),
-            name: "Hari Hara Sudhan S.",
-            contactNumber: "9894586038",
-            address: "ABC"
-        }
-        await UserModel.create(data);
-        res.sendStatus(200);
-    }
-    catch(err) {
-        next(err);
-    }
-})
 
 export default router;

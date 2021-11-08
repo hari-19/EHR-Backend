@@ -2,7 +2,7 @@ import { UserModel, UserSchema } from '../schemas/user';
 import { Request, Response } from 'express';
 import { Joi } from 'express-validation';
 import { sendError } from "../helpers/errorHelper";
-import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 /**
  * SignUp Patient User Controller Validator Config
@@ -12,7 +12,8 @@ export const signUpValidation = {
         id: Joi.string().required(),
         name: Joi.string().required(),
         contactNumber: Joi.string().required(),
-        address: Joi.string().required()
+        address: Joi.string().required(),
+        password: Joi.string().required()
     }),
 };
 
@@ -22,7 +23,7 @@ export const signUpValidation = {
  */
 export async function signUp(req: Request, res: Response, next: any) {
     try {
-        const { id, name, contactNumber, address } = req.body;
+        const { id, name, contactNumber, address, password } = req.body;
         const sameUserCheck = await UserModel.find({
             name, contactNumber
         });
@@ -31,8 +32,13 @@ export async function signUp(req: Request, res: Response, next: any) {
             sendError(res, 400, "User Already Exist");
         }
 
+        // generate salt to hash password
+        const salt = await bcrypt.genSalt(10);
+        // now we set user password to hashed password
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         await UserModel.create({
-            _id: id, name, contactNumber, address
+            _id: id, name, contactNumber, address, password: hashedPassword
         })
 
         res.status(201).send({
@@ -43,3 +49,7 @@ export async function signUp(req: Request, res: Response, next: any) {
         next(err);
     }
 }
+
+// export async function signIn(req: Request, res: Response, next: any) {
+
+// }
