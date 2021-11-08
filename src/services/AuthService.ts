@@ -20,7 +20,3 @@ export function authenticateToken(req: UserRequest, res:Response, next: any){
         req.user = user;
     })
 }
-
-// export function getRefreshToken(){
-
-// }
