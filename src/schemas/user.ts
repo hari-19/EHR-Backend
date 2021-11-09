@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import mongodb from 'mongodb';
 
 export interface UserSchema {
     _id: string,

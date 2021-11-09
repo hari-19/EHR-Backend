@@ -4,8 +4,7 @@ import { helloWorldController }  from '../controllers/helloWord';
 import * as ethController from '../controllers/ethController';
 import * as encryptionController from '../controllers/encryptionController';
 
-import { UserSchema, UserModel} from '../schemas/user';
-import { v4 as uuidv4 } from 'uuid';
+import { RecordModel } from "../schemas/record";
 
 import { authenticateJWT } from '../services/authService';
 
@@ -23,9 +22,18 @@ router.post('/decry', encryptionController.decrypt);
 router.post('/enc1', encryptionController.aEncrypt);
 router.post('/decry1', encryptionController.aDecrypt);
 router.get('/key', encryptionController.genKey);
-// router.get('/temp', authenticateJWT, (req: any, res: any) => {
-//     res.json(req.user);
-//     // res.end();
-// })
+router.get('/temp', authenticateJWT, async (req: any, res: any, next: any) => {
+    try {
+        await RecordModel.create({
+            data: {
+                hi: "Hello"
+            }
+        })
+        res.end();
+    }
+    catch(error) {
+        next(error)
+    }
+})
 
 export default router;
