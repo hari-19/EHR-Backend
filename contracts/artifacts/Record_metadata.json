@@ -1,10 +1,29 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "user",
+						"type": "string"
+					}
+				],
+				"name": "getKeys",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
 			{
 				"inputs": [
 					{
@@ -26,6 +45,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "string",
+						"name": "user",
+						"type": "string"
+					},
 					{
 						"internalType": "string",
 						"name": "s",
@@ -71,10 +95,10 @@
 	},
 	"sources": {
 		"record.sol": {
-			"keccak256": "0xaef84adb3ec4f75192ba4116f8db9b481fc46fce494bf5e71d65cc60d362bf5a",
+			"keccak256": "0xa98a7a67fd0a4bec75871adf125eb51306f647d3dd882f044ab0b6347a33a7f9",
 			"urls": [
-				"bzz-raw://f1b06372395724770be5d416947da130c2e20ab674a542754eb7e12744af833b",
-				"dweb:/ipfs/QmTM4ezSFq27aKFCAMekrg4X1ortPnQND8WLsNa4g5jWgy"
+				"bzz-raw://042da2ac338b210f34f5a69f94ec13aed9abfe798d93016c1e465c2a0072f13a",
+				"dweb:/ipfs/QmcvL4oyead6tMSCutoi2VgGMQVzDNptDZNtiYTyaXePuj"
 			]
 		}
 	},

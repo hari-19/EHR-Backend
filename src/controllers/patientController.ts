@@ -1,4 +1,4 @@
-import { UserModel, UserSchema } from '../schemas/user';
+import { PatientModel, PatientSchema } from '../schemas/patient';
 import { Request, Response } from 'express';
 import { Joi } from 'express-validation';
 import { sendError } from "../helpers/errorHelper";
@@ -12,9 +12,12 @@ export const signUpValidation = {
     body: Joi.object({
         id: Joi.string().required(),
         name: Joi.string().required(),
+        ethPublicKey: Joi.string().required(),
         contactNumber: Joi.string().required(),
+        emailId: Joi.string().email(),
         address: Joi.string().required(),
-        password: Joi.string().required()
+        password: Joi.string().required(),
+        dob: Joi.string().isoDate().required(),
     }),
 };
 
@@ -24,8 +27,8 @@ export const signUpValidation = {
  */
 export async function signUp(req: Request, res: Response, next: any) {
     try {
-        const { id, name, contactNumber, address, password } = req.body;
-        const sameUserCheck = await UserModel.find({
+        const { id, name, contactNumber, address, password, ethPublicKey, emailId, dob } = req.body;
+        const sameUserCheck = await PatientModel.find({
             name, contactNumber
         });
 
@@ -38,12 +41,13 @@ export async function signUp(req: Request, res: Response, next: any) {
         // now we set user password to hashed password
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        await UserModel.create({
-            _id: id, name, contactNumber, address, password: hashedPassword
+        const dobObj = new Date(dob);
+        await PatientModel.create({
+            _id: id, name, contactNumber, address, password: hashedPassword, ethPublicKey, emailId, dob: dobObj
         })
 
         res.status(201).send({
-            message: "User Created Successfully"
+            message: "Patient Created Successfully"
         });
     }
     catch(err) {
@@ -51,24 +55,26 @@ export async function signUp(req: Request, res: Response, next: any) {
     }
 }
 
-/**
- * SignIn Patient User Controller Validator Config
- */
-export const signInValidation = {
-   body: Joi.object({
-        id: Joi.string().required(),
-        password: Joi.string().required()
-    }),
-};
 
 /**
- * Function to SignIn Patient Users Controller.
+ * SignIn Doctor User Controller Validator Config
+ */
+ export const signInValidation = {
+    body: Joi.object({
+         id: Joi.string().required(),
+         password: Joi.string().required(),
+     }),
+ };
+
+ 
+/**
+ * Function to SignIn Doctor Users Controller.
  * id, password are the required body values for the controller.
  */
-export async function signIn(req: Request, res: Response, next: any) {
+ export async function signIn(req: Request, res: Response, next: any) {
     try {
         const { id, password } = req.body;
-        const user = await UserModel.findById(id);
+        const user = await PatientModel.findById(id);
 
         if(!user) {
             sendError(res, 400, "User doesn't exist");
@@ -91,6 +97,44 @@ export async function signIn(req: Request, res: Response, next: any) {
         res.status(200).send({
             token
         })
+    }
+    catch(err) {
+        next(err);
+    }
+}
+
+/**
+ * getPatientDetails User Controller Validator Config
+ */
+export const getPatientDetailsValidation = {
+   body: Joi.object({
+        id: Joi.string().required(),
+    }),
+};
+
+/**
+ * Function to Return Patient Details.
+ * id is the required body values for the controller.
+ */
+export async function getPatientDetails(req: Request, res: Response, next: any) {
+    try {
+        const { id } = req.body;
+        const user = await PatientModel.findById(id);
+
+        if(!user) {
+            sendError(res, 400, "User doesn't exist");
+            return;
+        }
+
+        const responseData = {
+            id: user.id,
+            name: user.name,
+            contactNumber: user.contactNumber,
+            address: user.address,
+            dob: user.dob.toISOString(),
+        };
+
+        res.status(200).send(responseData);
     }
     catch(err) {
         next(err);
