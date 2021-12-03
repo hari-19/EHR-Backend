@@ -7,5 +7,6 @@ const router = express.Router();
 router.post('/signup', validate(patientController.signUpValidation), patientController.signUp);
 router.post('/signIn', validate(patientController.signInValidation), patientController.signIn);
 router.post('/get', validate(patientController.getPatientDetailsValidation), patientController.getPatientDetails);
+router.post('/search', validate(patientController.patientSearchValidation), patientController.patientSearch);
 
 export default router;
