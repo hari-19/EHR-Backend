@@ -42,11 +42,11 @@ export const getRecord = async (req: Request, res: Response, next: any) => {
 
 export const postRecord = async (req: Request, res: Response, next: any) => {
     try {
-        const { key, data } = req.body;
+        const { userId, key, data } = req.body;
         if(!key || !data || typeof key !== 'string' || typeof data !== 'string') {
             throw new Error('Incorrect Body');
         }
-        const response = await ethService.postRecord(key, data)
+        const response = await ethService.postRecord(userId, key, data)
         res.json(response)
     }
     catch(err) {
@@ -58,6 +58,16 @@ export const postRecord = async (req: Request, res: Response, next: any) => {
 export const getFunds = async (req: Request, res: Response, next: any) => {
     try {
         const response = await ethService.addEther();
+        res.json(response);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const getBalance = async (req: Request, res: Response, next: any) => {
+    try {
+        const response = await ethService.getBalance(process.env.ADDR);
         res.json(response);
     }
     catch (err) {

@@ -1,10 +1,9 @@
 import express   from 'express';
-import * as patientController from '../controllers/patientController';
 import { validate } from 'express-validation';
+import * as recordController from "../controllers/recordController";
 
 const router = express.Router();
 
-router.post('/signup', validate(patientController.signUpValidation), patientController.signUp);
-router.post('/signIn', validate(patientController.signInValidation), patientController.signIn);
+router.post('/addRecord', validate(recordController.addRecordValidation), recordController.addRecord);
 
 export default router;

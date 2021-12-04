@@ -16,10 +16,11 @@ import * as ethService from "../services/ethService";
 // }
 
 export async function encryptAndSaveToEth(recordDoc: RecordSchema) {
-    const encryptedData = encryptionService.encryptSymmetric({
-        key: recordDoc.key,
-        data: JSON.stringify(recordDoc.data)
-    });
+    // const encryptedData = encryptionService.encryptSymmetric({
+    //     key: recordDoc.key,
+    //     data: JSON.stringify(recordDoc.data)
+    // });
 
-    await ethService.postRecord(recordDoc._id, encryptedData);
+    const encryptedData = JSON.stringify(recordDoc.data);
+    await ethService.postRecord(recordDoc.data.patientId, recordDoc._id, encryptedData);
 }

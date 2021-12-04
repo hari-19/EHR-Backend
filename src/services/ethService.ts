@@ -53,8 +53,8 @@ export const addEther = async () => {
     const accArray = await web3.eth.getAccounts();
     for(const acc of accArray) {
         const bal = await web3.eth.getBalance(acc);
-        if(bal >= Web3.utils.toWei('5', 'ether')) {
-            return await sendEthTransaction(acc, process.env.ADDR, Web3.utils.toWei('5', 'ether'), 21000);
+        if(parseInt(bal, 10) >= parseInt(Web3.utils.toWei('11', 'ether'), 10)){
+            return await sendEthTransaction(acc, process.env.ADDR, Web3.utils.toWei('10', 'ether'), 21000);
         }
     }
     throw new Error('Not Enough funds in any account');
@@ -67,16 +67,22 @@ export const getRecord = async (key: string) => {
     return response;
 }
 
-export const postRecord = async (key: string, data: string) => {
+export const postRecord = async (userId:string, key: string, data: string) => {
     connectEth();
-    const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR)
-    const abi = recordContract.methods.postRecord(data, key).encodeABI();
+    const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR);
+    const abi = recordContract.methods.postRecord(userId, data, key).encodeABI();
+
     const signedTx = await web3.eth.accounts.signTransaction({
         data: abi,
         from: process.env.ADDR,
         to: recordContract.options.address,
-        gas: 210000
+        gas: 2882800
     }, process.env.P_KEY);
-    const response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-    return response
+    try {
+        const response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return response
+    }
+    catch(err) {
+        console.log(err);
+    }
 }

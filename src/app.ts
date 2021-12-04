@@ -8,6 +8,7 @@ import cors from 'cors';
 import indexRouter from './routes/index';
 import patientRouter from './routes/patientRouter';
 import doctorRouter from './routes/doctorRouter';
+import recordRouter from './routes/recordRouter';
 import { ValidationError } from 'express-validation';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(cookieParser());
 
 app.use('/patient', patientRouter);
 app.use('/doctor', doctorRouter);
+app.use('/record', recordRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
