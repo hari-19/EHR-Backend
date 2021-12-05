@@ -4,6 +4,9 @@ import { Joi } from 'express-validation';
 import { PrescriptionRecordBody } from '../types/recordTypes';
 import * as ethService from '../services/ethService';
 import { sendError } from '../helpers/errorHelper';
+import { HospitalModel } from '../schemas/hospital';
+import { HospitalSchema } from '../schemas/hospital';
+import { DoctorModel, DoctorSchema } from '../schemas/doctor';
 
 /**
  * addRecord Controller Validator Config
@@ -87,7 +90,7 @@ export async function getRecordsByPatientId (req: any, res: any, next: any) {
 
         const localRecords: string[] = [];
         const responseObj = recordsLocal.map(r => {
-            localRecords.push(r._id);
+        localRecords.push(r._id);
             return ({
                 id: r._id,
                 ...r.data
@@ -105,7 +108,7 @@ export async function getRecordsByPatientId (req: any, res: any, next: any) {
         responseObj.sort((a, b) => (new Date(a.date).valueOf() - new Date(b.date).valueOf()));
         res.json({
             count: responseObj.length,
-            data: responseObj
+            data: await getDoctorHospitalName(responseObj)
         });
     }
     catch(error) {
@@ -129,11 +132,57 @@ export async function getRecord (req: any, res: any, next: any) {
         const data = JSON.parse(recordString);
         data.id = id;
 
+        const doctor: DoctorSchema = await DoctorModel.findById(data.doctorId);
+        const hospital: HospitalSchema = await HospitalModel.findById(data.hospitalId);
+
+        let doctorName = '';
+        let hospitalName = '';
+        if(doctor) {
+            doctorName = doctor.name;
+        }
+
+        if(hospital) {
+            hospitalName = hospital.name;
+        }
+
+        data.doctor= doctorName;
+        data.hospital= hospitalName;
+
         res.json({
-            data
+            data,
         });
     }
     catch(error) {
         next(error);
     }
+}
+
+
+async function getDoctorHospitalName(records: any[]) {
+    const hospitalMap: any = {}
+    const doctorMap: any = {}
+    for(const r of records) {
+        let hospitalName = "";
+        let doctorName = "";
+        console.log(r);
+        if(hospitalMap[r.hospitalId]) {
+            hospitalName = hospitalMap[r.hospitalId];
+        }
+        else {
+            const hospital: HospitalSchema= await HospitalModel.findById(r.hospitalId);
+            if(hospital)
+                hospitalName = hospital.name;
+        }
+        if(doctorMap[r.doctorId]) {
+            doctorName = doctorMap[r.doctorId];
+        }
+        else {
+            const doctor: DoctorSchema= await DoctorModel.findById(r.doctorId);
+            if(doctor)
+                doctorName = doctor.name;
+        }
+        r.hospital = hospitalName;
+        r.doctor = doctorName;
+    }
+    return records;
 }
