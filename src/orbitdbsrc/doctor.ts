@@ -10,7 +10,7 @@ export async function addDoctor() {
     // }
 
     const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
-    // const db = await orbitdb.keyvalue('doctor');
+    // const db = await orbitdb.keyvalue('doctor', options);
     console.log(db.address.toString());
     await db.load();
 
