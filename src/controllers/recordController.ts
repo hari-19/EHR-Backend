@@ -28,6 +28,7 @@ export const addRecordValidation = {
     body: Joi.object({
          illness: Joi.string().required(),
          patientId: Joi.string().required(),
+         doctorId: Joi.string().required(),
          description: Joi.string().required(),
          medicine: Joi.array().items(medicineItemsValidation)
      }),
@@ -38,16 +39,16 @@ export async function addRecord (req: any, res: any, next: any) {
         const record: PrescriptionRecordBody = req.body;
         const date = new Date();
         const hospitalId = process.env.HOSPITAL_ID;
-        const doctorId = "123";
         await RecordModel.create({
             data: {
                 ...record,
                 date,
                 hospitalId,
-                doctorId
             }
         })
-        res.status(201).send("Record Created Successfully");
+        res.status(201).json({
+            data: "Record Created Successfully"
+        });
     }
     catch(error) {
         next(error)
@@ -105,7 +106,7 @@ export async function getRecordsByPatientId (req: any, res: any, next: any) {
             responseObj.push(data);
         }
 
-        responseObj.sort((a, b) => (new Date(a.date).valueOf() - new Date(b.date).valueOf()));
+        responseObj.sort((a, b) => (new Date(b.date).valueOf() - new Date(a.date).valueOf()));
         res.json({
             count: responseObj.length,
             data: await getDoctorHospitalName(responseObj)
@@ -164,7 +165,6 @@ async function getDoctorHospitalName(records: any[]) {
     for(const r of records) {
         let hospitalName = "";
         let doctorName = "";
-        console.log(r);
         if(hospitalMap[r.hospitalId]) {
             hospitalName = hospitalMap[r.hospitalId];
         }

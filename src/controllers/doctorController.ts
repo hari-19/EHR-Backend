@@ -93,6 +93,7 @@ export async function signUp(req: Request, res: Response, next: any) {
 
         const hospital: HospitalSchema = await HospitalModel.findById(user.hospitalId);
         res.status(200).send({
+            id: user._id,
             name: user.name,
             hospitalId: hospital._id,
             hospitalName: hospital.name,

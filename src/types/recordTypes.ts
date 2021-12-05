@@ -1,5 +1,6 @@
 export interface PrescriptionRecordBody {
     patientId: string;
+    doctorId: string;
     illness: string;
     description: string;
     medicine: Medicine[];
