@@ -11,6 +11,7 @@
  import bunyan from 'bunyan';
  import dotenv from 'dotenv';
  import mongoose from 'mongoose';
+ import OrbitDb from "./orbitdbsrc/index";
 
  dotenv.config();
 
@@ -100,6 +101,8 @@
     */
     mongoose.Promise = global.Promise;
     mongoose.connect(process.env.DB_URL).then(() => {
-      log.info("Started Server on port " + port);
+      OrbitDb.getInstance().then(()=>{
+        log.info("Started Server on port " + port);
+      })
     });
  }
