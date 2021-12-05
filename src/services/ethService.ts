@@ -60,13 +60,6 @@ export const addEther = async () => {
     throw new Error('Not Enough funds in any account');
 }
 
-export const getRecord = async (key: string) => {
-    connectEth();
-    const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR)
-    const response: string = await recordContract.methods.getRecord(key).call()
-    return response;
-}
-
 export const postRecord = async (userId:string, key: string, data: string) => {
     connectEth();
     const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR);
@@ -85,4 +78,18 @@ export const postRecord = async (userId:string, key: string, data: string) => {
     catch(err) {
         console.log(err);
     }
+}
+
+export const getRecord = async (key: string) => {
+    connectEth();
+    const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR)
+    const response: string = await recordContract.methods.getRecord(key).call()
+    return response;
+}
+
+export const getRecordId = async (patientId: string) => {
+    connectEth();
+    const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR)
+    const response: string[] = await recordContract.methods.getKeys(patientId).call()
+    return response;
 }
