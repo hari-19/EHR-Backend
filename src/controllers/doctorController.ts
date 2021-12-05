@@ -4,6 +4,7 @@ import { Joi } from 'express-validation';
 import { sendError } from "../helpers/errorHelper";
 import bcrypt from 'bcrypt';
 import * as authService from '../services/authService';
+import { HospitalModel, HospitalSchema } from '../schemas/hospital';
 
 /**
  * SignUp Doctor User Controller Validator Config
@@ -12,7 +13,9 @@ import * as authService from '../services/authService';
     body: Joi.object({
         id: Joi.string().required(),
         email_id: Joi.string().email().required(),
-        password: Joi.string().required()
+        password: Joi.string().required(),
+        hospitalId: Joi.string().required(),
+        name: Joi.string().required()
     }),
 };
 
@@ -22,7 +25,7 @@ import * as authService from '../services/authService';
  */
 export async function signUp(req: Request, res: Response, next: any) {
     try {
-        const { id, email_id, password } = req.body;
+        const { id, email_id, password, name, hospitalId } = req.body;
         const sameUserCheck = await DoctorModel.findById(id);
 
         console.log(sameUserCheck);
@@ -36,7 +39,7 @@ export async function signUp(req: Request, res: Response, next: any) {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         await DoctorModel.create({
-            _id: id, email_id, password: hashedPassword
+            _id: id, email_id, password: hashedPassword, hospitalId, name
         })
 
         res.status(201).send({
@@ -87,7 +90,12 @@ export async function signUp(req: Request, res: Response, next: any) {
         };
 
         const token = authService.generateAccessToken(tokenData);
+
+        const hospital: HospitalSchema = await HospitalModel.findById(user.hospitalId);
         res.status(200).send({
+            name: user.name,
+            hospitalId: hospital._id,
+            hospitalName: hospital.name,
             token
         })
     }
