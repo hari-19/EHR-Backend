@@ -4,7 +4,7 @@ import express   from 'express';
 import * as ethController from '../controllers/ethController';
 // import * as encryptionController from '../controllers/encryptionController';
 
-import { RecordModel } from "../schemas/record";
+import * as doctorOrbit from "../orbitdb/doctor";
 
 import { authenticateJWT } from '../services/authService';
 
@@ -24,13 +24,10 @@ router.get('/eth/createAccount', ethController.createAccount);
 // router.post('/enc1', encryptionController.aEncrypt);
 // router.post('/decry1', encryptionController.aDecrypt);
 // router.get('/key', encryptionController.genKey);
-router.get('/temp', authenticateJWT, async (req: any, res: any, next: any) => {
+router.get('/temp', async (req: any, res: any, next: any) => {
     try {
-        await RecordModel.create({
-            data: {
-                hi: "Hello"
-            }
-        })
+        await doctorOrbit.addDoctor();
+        await doctorOrbit.getDoctor();
         res.end();
     }
     catch(error) {
