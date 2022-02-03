@@ -14,11 +14,7 @@ export namespace OrbitDb {
     // Create IPFS instance
     const ipfsOptions = {
       repo: "./ipfs",
-      EXPERIMENTAL: { pubsub: true },
-      config: {
-        Bootstrap: [] as any,
-        Addresses: { Swarm: [] as any },
-      },
+      EXPERIMENTAL: { pubsub: true }
     };
     const ipfs = await IPFS.create(ipfsOptions);
 
