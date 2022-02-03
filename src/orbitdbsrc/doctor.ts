@@ -14,7 +14,7 @@ export async function addDoctor() {
     console.log("Reached");
     const s = OrbitDB.isValidAddress(process.env.ORBIT_DB_DOCTOR);
     console.log(s);
-    
+
     // console.log(process.env.ORBIT_DB_DOCTOR);
     const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
     console.log("Reached1");

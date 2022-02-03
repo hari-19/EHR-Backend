@@ -20,7 +20,8 @@
   */
 
  const log = bunyan.createLogger({name : 'EHR' })
- const port = normalizePort(process.env.PORT || '9000');
+//  const port = normalizePort(process.env.PORT || '9200');
+ const port = normalizePort('9500');
  app.set('port', port);
 
  /**

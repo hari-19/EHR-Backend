@@ -9,15 +9,20 @@ export namespace OrbitDb {
 
   export async function getInstance() {
     if (orbitdb) {
+      console.log("Asdf");
       return orbitdb;
     }
     // Create IPFS instance
     const ipfsOptions = {
       repo: "./ipfs",
-      EXPERIMENTAL: { pubsub: true }
+      relay: { enabled: true, hop: { enabled: true, active: true } },
+      EXPERIMENTAL: { pubsub: true },
     };
     const ipfs = await IPFS.create(ipfsOptions);
 
+    ipfs.config.set('Addresses.Swarm', ['/ip4/0.0.0.0/tcp/4002', '/ip4/127.0.0.1/tcp/4003/ws'], console.log);
+    const id = ipfs.id();
+    console.log(id.addresses);
     // Create OrbitDB instance
     orbitdb = await OrbitDB.createInstance(ipfs);
 
