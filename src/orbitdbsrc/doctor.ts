@@ -15,8 +15,8 @@ export async function addDoctor() {
     const s = OrbitDB.isValidAddress(process.env.ORBIT_DB_DOCTOR);
     console.log(s);
 
-    // console.log(process.env.ORBIT_DB_DOCTOR);
-    const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
+    console.log(process.env.ORBIT_DB_DOCTOR);
+    const db = await orbitdb.keyvalue("doctor", options);
     console.log("Reached1");
     // const db = await orbitdb.keyvalue('doctor', options);
     console.log(db.address.toString());
@@ -25,12 +25,15 @@ export async function addDoctor() {
 
     await db.put('abc', "Hariii", {pin: true});
     console.log("Added");
+
+    const val = await db.get('abc');
+    console.log(val);
 }
 
 export async function getDoctor() {
-    const orbitdb = await OrbitDb.getInstance();
-    const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
-    await db.load();
-    const val = db.get('abc');
-    console.log(val);
+    // const orbitdb = await OrbitDb.getInstance();
+    // const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
+    // await db.load();
+    // const val = db.get('abc');
+    // console.log(val);
 }
