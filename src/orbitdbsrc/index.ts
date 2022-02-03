@@ -5,15 +5,21 @@ const OrbitDB = require("orbit-db");
 
 // tslint:disable-next-line: no-namespace
 export namespace OrbitDb {
-
   let orbitdb: any;
 
   export async function getInstance() {
-    if(orbitdb) {
+    if (orbitdb) {
       return orbitdb;
     }
     // Create IPFS instance
-    const ipfsOptions = { repo: "./ipfs" };
+    const ipfsOptions = {
+      repo: "./ipfs",
+      EXPERIMENTAL: { pubsub: true },
+      config: {
+        Bootstrap: [] as any,
+        Addresses: { Swarm: [] as any },
+      },
+    };
     const ipfs = await IPFS.create(ipfsOptions);
 
     // Create OrbitDB instance
