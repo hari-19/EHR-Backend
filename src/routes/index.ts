@@ -4,7 +4,7 @@ import express   from 'express';
 import * as ethController from '../controllers/ethController';
 // import * as encryptionController from '../controllers/encryptionController';
 
-import * as doctorOrbit from "../orbitdb/doctor";
+import * as doctorOrbit from "../orbitdbsrc/doctor";
 
 import { authenticateJWT } from '../services/authService';
 

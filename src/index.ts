@@ -11,7 +11,7 @@
  import bunyan from 'bunyan';
  import dotenv from 'dotenv';
  import mongoose from 'mongoose';
- import OrbitDb from "./orbitdb/index";
+ import OrbitDb from "./orbitdbsrc/index";
 
  dotenv.config();
 
