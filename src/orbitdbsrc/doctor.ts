@@ -11,6 +11,7 @@ export async function addDoctor() {
     // }
     console.log("Reached");
 
+    console.log(process.env.ORBIT_DB_DOCTOR);
     const db = await orbitdb.keyvalue(process.env.ORBIT_DB_DOCTOR);
     console.log("Reached1");
     // const db = await orbitdb.keyvalue('doctor');
