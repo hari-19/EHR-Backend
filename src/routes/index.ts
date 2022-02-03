@@ -7,6 +7,7 @@ import * as ethController from '../controllers/ethController';
 import * as doctorOrbit from "../orbitdbsrc/doctor";
 
 import { authenticateJWT } from '../services/authService';
+import { OrbitDb } from "../orbitdbsrc/index";
 
 const router = express.Router();
 /* GET home page. */
@@ -34,5 +35,14 @@ router.get('/temp', async (req: any, res: any, next: any) => {
         next(error)
     }
 })
-
+router.get('/temp1', async (req: any, res: any, next: any) => {
+    try {
+        const { id } = req.body;
+        await OrbitDb.connectToPeer(id);
+        res.end();
+    }
+    catch(error) {
+        next(error)
+    }
+})
 export default router;
