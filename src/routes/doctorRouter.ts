@@ -8,4 +8,4 @@ router.post('/signup', validate(doctorController.signUpValidation), doctorContro
 router.post('/register', validate(doctorController.registerValidation), doctorController.register);
 router.post('/signIn', validate(doctorController.signInValidation), doctorController.signIn);
 
-export default router;  
+export default router;

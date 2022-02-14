@@ -11,6 +11,7 @@
  import bunyan from 'bunyan';
  import dotenv from 'dotenv';
  import mongoose from 'mongoose';
+ import GunDB from './gun';
 
  dotenv.config();
 

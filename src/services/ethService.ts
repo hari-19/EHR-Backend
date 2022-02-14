@@ -142,7 +142,7 @@ export const getDoctorDetails = async (doctorId: string) => {
     connectEth();
     const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR)
     const response: string = await doctorContract.methods.getDoctor(doctorId).call()
-    if(response == "") {
+    if(response === "") {
         throw new Error("Doctor Details not found");
     }
     return response;

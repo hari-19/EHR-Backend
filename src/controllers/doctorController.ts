@@ -64,7 +64,7 @@ export async function signUp(req: Request, res: Response, next: any) {
         //     sendError(res, 400, "User Already Exist");
         // }
 
-        //get user details from blockchain
+        // get user details from blockchain
         const doctorName = await ethService.getDoctorDetails(id);
         console.log(doctorName);
 
