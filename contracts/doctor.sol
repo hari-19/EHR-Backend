@@ -10,7 +10,7 @@ contract Doctor {
         hospitals[key] = h;
     }
     
-    function updateHostpital(string memory h, string memory key) public {
+    function updateHospital(string memory h, string memory key) public {
         hospitals[key] = h;
     }
 

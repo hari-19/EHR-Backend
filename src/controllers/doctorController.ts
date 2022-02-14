@@ -5,6 +5,39 @@ import { sendError } from "../helpers/errorHelper";
 import bcrypt from 'bcrypt';
 import * as authService from '../services/authService';
 import { HospitalModel, HospitalSchema } from '../schemas/hospital';
+import * as ethService from "../services/ethService";
+
+/**
+ * Register Doctor User Controller Validator Config
+ */
+ export const registerValidation = {
+    body: Joi.object({
+        id: Joi.string().required(),
+        name: Joi.string().required()
+    }),
+};
+
+/**
+ * Function to register Doctor Users Controller.
+ * id, name are the required body values for the controller.
+ */
+export async function  register(req: Request, res: Response, next: any) {
+    try {
+        const { id, name } = req.body;
+
+        const hospitalId = process.env.HOSPITAL_ID;
+
+        await ethService.postDoctor(id, hospitalId, name);
+
+        res.status(201).send({
+            message: "Doctor registered successfully"
+        });
+    }
+    catch(err) {
+        next(err);
+    }
+}
+
 
 /**
  * SignUp Doctor User Controller Validator Config
@@ -13,9 +46,7 @@ import { HospitalModel, HospitalSchema } from '../schemas/hospital';
     body: Joi.object({
         id: Joi.string().required(),
         email_id: Joi.string().email().required(),
-        password: Joi.string().required(),
-        hospitalId: Joi.string().required(),
-        name: Joi.string().required()
+        password: Joi.string().required()
     }),
 };
 
@@ -25,7 +56,7 @@ import { HospitalModel, HospitalSchema } from '../schemas/hospital';
  */
 export async function signUp(req: Request, res: Response, next: any) {
     try {
-        const { id, email_id, password, name, hospitalId } = req.body;
+        const { id, email_id, password } = req.body;
         const sameUserCheck = await DoctorModel.findById(id);
 
         console.log(sameUserCheck);
@@ -33,14 +64,22 @@ export async function signUp(req: Request, res: Response, next: any) {
         //     sendError(res, 400, "User Already Exist");
         // }
 
+        //get user details from blockchain
+        const doctorName = await ethService.getDoctorDetails(id);
+        console.log(doctorName);
+
         // generate salt to hash password
         const salt = await bcrypt.genSalt(10);
         // now we set user password to hashed password
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        const hospitalId = process.env.HOSPITAL_ID;
+
+        await ethService.updateDoctorHospital(id, hospitalId);
+
         await DoctorModel.create({
-            _id: id, email_id, password: hashedPassword, hospitalId, name
-        })
+            _id: id, email_id, password: hashedPassword, hospitalId, name: doctorName
+        });
 
         res.status(201).send({
             message: "Doctor account created Successfully"

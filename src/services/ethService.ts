@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import { Account } from 'web3-core'
 import * as RecordContract from '../../contracts/artifacts/Record.json'
+import * as DoctorContract from '../../contracts/artifacts/DOctor.json'
 import { AbiItem } from 'web3-utils'
 
 let web3: Web3;
@@ -91,5 +92,66 @@ export const getRecordId = async (patientId: string) => {
     connectEth();
     const recordContract = new web3.eth.Contract(RecordContract.abi as AbiItem[], process.env.RECORD_ADDR)
     const response: string[] = await recordContract.methods.getKeys(patientId).call()
+    return response;
+}
+
+// Doctor Eth Services
+
+export const postDoctor = async (doctorId: string, hospitalId: string, data: string) => {
+    connectEth();
+    const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR);
+    const abi = doctorContract.methods.postRecord(data, hospitalId, doctorId).encodeABI();
+
+    const signedTx = await web3.eth.accounts.signTransaction({
+        data: abi,
+        from: process.env.ADDR,
+        to: doctorContract.options.address,
+        gas: 2882800
+    }, process.env.P_KEY);
+    try {
+        const response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return response
+    }
+    catch(err) {
+        // console.log(err);
+        throw err;
+    }
+}
+
+export const updateDoctorHospital = async (doctorId: string, hospitalId: string) => {
+    connectEth();
+    const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR);
+    const abi = doctorContract.methods.updateHospital(hospitalId, doctorId).encodeABI();
+
+    const signedTx = await web3.eth.accounts.signTransaction({
+        data: abi,
+        from: process.env.ADDR,
+        to: doctorContract.options.address,
+        gas: 2882800
+    }, process.env.P_KEY);
+    try {
+        const response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return response
+    }
+    catch(err) {
+        console.log(err);
+    }
+}
+
+export const getDoctorDetails = async (doctorId: string) => {
+    connectEth();
+    const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR)
+    const response: string = await doctorContract.methods.getDoctor(doctorId).call()
+    if(response == "") {
+        throw new Error("Doctor Details not found");
+    }
+    return response;
+}
+
+
+export const getDoctorHospital = async (doctorId: string) => {
+    connectEth();
+    const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR)
+    const response: string = await doctorContract.methods.getHospital(doctorId).call()
     return response;
 }
