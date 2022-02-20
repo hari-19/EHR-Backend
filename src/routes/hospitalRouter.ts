@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.post('/add', validate(hospitalController.addHospitalValidation), hospitalController.addHospital);
 router.get('/getAll', hospitalController.getHospitals);
-router.post('/addGun', validate(hospitalController.addGunHospitalValidation), hospitalController.addGunHospital);
-router.post('/getGun', validate(hospitalController.getGunHospitalValidation),hospitalController.getGunHospital);
+router.post('/get', validate(hospitalController.getOneHospitalValidation),hospitalController.getOneHospital);
 
 export default router;
