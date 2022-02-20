@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Joi } from "express-validation";
 import { HospitalModel } from "../schemas/hospital";
 import GunDB from "../gun";
+// tslint:disable-next-line: no-var-requires
 require("gun/lib/then.js");
 
 export async function getHospitals(req: Request, res: Response, next: any) {
