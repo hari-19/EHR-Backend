@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { Account } from 'web3-core'
 import * as RecordContract from '../../contracts/artifacts/Record.json'
-import * as DoctorContract from '../../contracts/artifacts/DOctor.json'
+import * as DoctorContract from '../../contracts/artifacts/Doctor.json'
 import { AbiItem } from 'web3-utils'
 
 let web3: Web3;
