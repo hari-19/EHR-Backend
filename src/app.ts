@@ -10,6 +10,7 @@ import patientRouter from './routes/patientRouter';
 import doctorRouter from './routes/doctorRouter';
 import recordRouter from './routes/recordRouter';
 import hospitalRouter from './routes/hospitalRouter';
+import notificationRouter from './routes/notificationRouter';
 import { ValidationError } from 'express-validation';
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/patient', patientRouter);
 app.use('/hospital', hospitalRouter);
 app.use('/doctor', doctorRouter);
 app.use('/record', recordRouter);
+app.use('/notifications', notificationRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

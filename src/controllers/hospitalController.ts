@@ -18,7 +18,7 @@ export async function getHospitals(req: Request, res: Response, next: any) {
         const details = {
           id: d.put.id,
           name: d.put.name,
-          url: d.put.name,
+          url: d.put.url,
         };
         list.push(details);
       }

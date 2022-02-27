@@ -9,5 +9,6 @@ router.post('/addRecord', validate(recordController.addRecordValidation), record
 router.post('/getRecordIdByPatientId', validate(recordController.getPatientRecordIdsByPatientIdValidation), recordController.getPatientRecordIdsByPatientId);
 router.post('/getRecordsByPatientId', validate(recordController.getRecordsByPatientIdValidation), recordController.getRecordsByPatientId);
 router.post('/getRecord', validate(recordController.getRecordValidation), recordController.getRecord);
+router.post('/postRecordKeys', validate(recordController.postRecordKeysValidation), recordController.postRecordKeys);
 
 export default router;

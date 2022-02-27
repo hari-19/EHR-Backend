@@ -103,6 +103,8 @@ export async function getRecordsByPatientId (req: any, res: any, next: any) {
             const recordString = await ethService.getRecord(id);
             const data = JSON.parse(recordString);
             data.id = id;
+            data.description = null;
+            data.medicine = null;
             responseObj.push(data);
         }
 
@@ -185,4 +187,44 @@ async function getDoctorHospitalName(records: any[]) {
         r.doctor = doctorName;
     }
     return records;
+}
+
+
+export const postRecordKeysValidation = {
+    body: Joi.object({
+         data: Joi.array().items({
+             recordId: Joi.string().required(),
+             key: Joi.string().required(),
+         }).required()
+     }),
+};
+
+export async function postRecordKeys(req: any, res: any, next: any) {
+    try {
+
+        console.log("Hello");
+        const { data } = req.body;
+        console.log(data);
+        for(const rec of data ) {
+            const id = rec.recordId;
+            const recordString = await ethService.getRecord(id);
+            const record = JSON.parse(recordString);
+            record.id = id;
+            console.log(record);
+            await RecordModel.create({
+                _id: id,
+                data: {
+                    ...record,
+                    date: new Date(record.date),
+                    new: false
+                },
+                key: rec.key,
+            })
+        };
+        
+        res.sendStatus(200);
+    }
+    catch(err) {
+        next(err);
+    }
 }

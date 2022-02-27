@@ -14,6 +14,7 @@ class GunDB
         });
 
         this.root.get("EHR-Hospital").on(data => console.log("EHR-Hospital", data));
+        this.root.get("EHR-Notifications").on(data => console.log("EHR-Notifications", data));
     }
 
     public static get Instance()

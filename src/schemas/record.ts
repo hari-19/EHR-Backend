@@ -22,15 +22,20 @@ recordSchema.pre("save", function(next) {
         if(err) {
             next(err);
         }
-        doc._id = config.hospitalId + "-" + ( "0000000" +config.recordSl).slice(-8);
-        doc.key = encryptionService.generateEncryptionKeySymmetric();
+        if(!doc._id) {
+            doc._id = config.hospitalId + "-" + ( "0000000" +config.recordSl).slice(-8);
+            doc.key = encryptionService.generateEncryptionKeySymmetric();
+        }
         next();
     });
 })
 
 recordSchema.post("save", function(this: any, next: any) {
     const doc = this;
-    recordService.encryptAndSaveToEth(doc);
+    console.log(doc);
+    if(doc.data.new !== false) {
+        recordService.encryptAndSaveToEth(doc);
+    }
 })
 
 export const RecordModel = mongoose.model<RecordSchema>('Records', recordSchema);

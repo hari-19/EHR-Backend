@@ -57,6 +57,7 @@ export const generateKey = () => {
         publicKey, privateKey
     }
 };
+
 export const encryptAsymmetric = (data: string, publicKey: string) => {
     const encryptedData = crypto.publicEncrypt(publicKey, Buffer.from(data));
     return encryptedData.toString('base64');

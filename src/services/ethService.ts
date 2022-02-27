@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { Account } from 'web3-core'
 import * as RecordContract from '../../contracts/artifacts/Record.json'
 import * as DoctorContract from '../../contracts/artifacts/Doctor.json'
+import * as UserContract from '../../contracts/artifacts/User.json'
 import { AbiItem } from 'web3-utils'
 
 let web3: Web3;
@@ -153,5 +154,40 @@ export const getDoctorHospital = async (doctorId: string) => {
     connectEth();
     const doctorContract = new web3.eth.Contract(DoctorContract.abi as AbiItem[], process.env.DOCTOR_ADDR)
     const response: string = await doctorContract.methods.getHospital(doctorId).call()
+    return response;
+}
+
+
+// User Records
+
+export const postUser = async (userId: string, data: string) => {
+    connectEth();
+    const userContract = new web3.eth.Contract(UserContract.abi as AbiItem[], process.env.USER_ADDR);
+    const abi = userContract.methods.postUser(data, userId).encodeABI();
+
+    const signedTx = await web3.eth.accounts.signTransaction({
+        data: abi,
+        from: process.env.ADDR,
+        to: userContract.options.address,
+        gas: 2882800
+    }, process.env.P_KEY);
+    try {
+        const response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return response
+    }
+    catch(err) {
+        // console.log(err);
+        throw err;
+    }
+}
+
+
+export const getUser = async (userId: string) => {
+    connectEth();
+    const userContract = new web3.eth.Contract(UserContract.abi as AbiItem[], process.env.USER_ADDR)
+    const response: string = await userContract.methods.getUser(userId).call()
+    if(response === "") {
+        throw new Error("Doctor Details not found");
+    }
     return response;
 }
