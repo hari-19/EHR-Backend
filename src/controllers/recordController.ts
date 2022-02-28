@@ -221,7 +221,7 @@ export async function postRecordKeys(req: any, res: any, next: any) {
                 key: rec.key,
             })
         };
-        
+
         res.sendStatus(200);
     }
     catch(err) {
