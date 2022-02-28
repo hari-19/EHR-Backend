@@ -8,7 +8,9 @@ const router = express.Router();
 router.post('/addRecord', validate(recordController.addRecordValidation), recordController.addRecord);
 router.post('/getRecordIdByPatientId', validate(recordController.getPatientRecordIdsByPatientIdValidation), recordController.getPatientRecordIdsByPatientId);
 router.post('/getRecordsByPatientId', validate(recordController.getRecordsByPatientIdValidation), recordController.getRecordsByPatientId);
+router.post('/getRecordsByPatientIdFromBlockchain', validate(recordController.getRecordsByPatientIdBlockchainValidation), recordController.getRecordsByPatientIdBlockchain);
 router.post('/getRecord', validate(recordController.getRecordValidation), recordController.getRecord);
-router.post('/postRecordKeys', validate(recordController.postRecordKeysValidation), recordController.postRecordKeys);
+// router.post('/postRecordKeys', validate(recordController.postRecordKeysValidation), recordController.postRecordKeys);
+router.post('/postRecordKeys', recordController.postRecordKeys);
 
 export default router;

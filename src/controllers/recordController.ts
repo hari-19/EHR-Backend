@@ -7,6 +7,7 @@ import { sendError } from '../helpers/errorHelper';
 import { HospitalModel } from '../schemas/hospital';
 import { HospitalSchema } from '../schemas/hospital';
 import { DoctorModel, DoctorSchema } from '../schemas/doctor';
+import GunDB from "../gun";
 
 /**
  * addRecord Controller Validator Config
@@ -134,18 +135,26 @@ export async function getRecord (req: any, res: any, next: any) {
         }
         const data = JSON.parse(recordString);
         data.id = id;
-
-        const doctor: DoctorSchema = await DoctorModel.findById(data.doctorId);
-        const hospital: HospitalSchema = await HospitalModel.findById(data.hospitalId);
-
         let doctorName = '';
-        let hospitalName = '';
-        if(doctor) {
+
+        const doctor: DoctorSchema= await DoctorModel.findById(data.doctorId);
+        if(doctor)
             doctorName = doctor.name;
+        else {
+            const dName = await ethService.getDoctorDetails(data.doctorId);
+            doctorName = dName;
         }
 
-        if(hospital) {
-            hospitalName = hospital.name;
+        let hospitalName = '';
+        const hospitalNode = GunDB.root.get("EHR-Hospital");
+        const d = await hospitalNode.get(data.hospitalId).promise();
+        if(d) {
+            const details = {
+                id: d.put.id,
+                name: d.put.name,
+                url: d.put.url,
+            };
+            hospitalName = details.name;
         }
 
         data.doctor= doctorName;
@@ -171,9 +180,17 @@ async function getDoctorHospitalName(records: any[]) {
             hospitalName = hospitalMap[r.hospitalId];
         }
         else {
-            const hospital: HospitalSchema= await HospitalModel.findById(r.hospitalId);
-            if(hospital)
-                hospitalName = hospital.name;
+            // const hospital: HospitalSchema= await HospitalModel.findById(r.hospitalId);
+            const hospitalNode = GunDB.root.get("EHR-Hospital");
+            const d = await hospitalNode.get(r.hospitalId).promise();
+            if(d) {
+                const details = {
+                    id: d.put.id,
+                    name: d.put.name,
+                    url: d.put.url,
+                };
+                hospitalName = details.name;
+            }
         }
         if(doctorMap[r.doctorId]) {
             doctorName = doctorMap[r.doctorId];
@@ -182,6 +199,10 @@ async function getDoctorHospitalName(records: any[]) {
             const doctor: DoctorSchema= await DoctorModel.findById(r.doctorId);
             if(doctor)
                 doctorName = doctor.name;
+            else {
+                const dName = await ethService.getDoctorDetails(r.doctorId);
+                doctorName = dName;
+            }
         }
         r.hospital = hospitalName;
         r.doctor = doctorName;
@@ -192,25 +213,24 @@ async function getDoctorHospitalName(records: any[]) {
 
 export const postRecordKeysValidation = {
     body: Joi.object({
-         data: Joi.array().items({
-             recordId: Joi.string().required(),
-             key: Joi.string().required(),
-         }).required()
+        //  data: Joi.array().items({
+        //      recordId: Joi.string().required(),
+        //      key: Joi.string().required(),
+        //  }).required()
      }),
 };
 
 export async function postRecordKeys(req: any, res: any, next: any) {
     try {
-
-        console.log("Hello");
-        const { data } = req.body;
-        console.log(data);
+        const { requestId, id } = req.body;
+        const d = req.body.data;
+        console.log(req.body);
+        const data = JSON.parse(d);
         for(const rec of data ) {
             const id = rec.recordId;
             const recordString = await ethService.getRecord(id);
             const record = JSON.parse(recordString);
             record.id = id;
-            console.log(record);
             await RecordModel.create({
                 _id: id,
                 data: {
@@ -222,9 +242,62 @@ export async function postRecordKeys(req: any, res: any, next: any) {
             })
         };
 
+        if(requestId && id) {
+            const notificationsNode = GunDB.root.get("EHR-Notifications");
+            const patientRequestNode = notificationsNode.get(id);
+            patientRequestNode.get(requestId).put(null);
+        }
+
         res.sendStatus(200);
     }
     catch(err) {
         next(err);
+    }
+}
+
+
+
+
+export const getRecordsByPatientIdBlockchainValidation = {
+    body: Joi.object({
+         patientId: Joi.string().required()
+     }),
+};
+
+export async function getRecordsByPatientIdBlockchain (req: any, res: any, next: any) {
+    try {
+        const { patientId } = req.body;
+        const recordIds = await ethService.getRecordId(patientId);
+        // const recordsLocal: RecordSchema[] = await RecordModel.find({
+        //     _id: recordIds
+        // });
+
+        // const localRecords: string[] = [];
+        const responseObj: any[] = [];
+        // const responseObj = recordsLocal.map(r => {
+        // localRecords.push(r._id);
+        //     return ({
+        //         id: r._id,
+        //         ...r.data
+        //     });
+        // });
+
+        // const missingRecords = recordIds.filter(x => !localRecords.includes(x));
+        // for(const id of missingRecords) {
+        for(const id of recordIds) {
+            const recordString = await ethService.getRecord(id);
+            const data = JSON.parse(recordString);
+            data.id = id;
+            responseObj.push(data);
+        }
+
+        responseObj.sort((a, b) => (new Date(b.date).valueOf() - new Date(a.date).valueOf()));
+        res.json({
+            count: responseObj.length,
+            data: await getDoctorHospitalName(responseObj)
+        });
+    }
+    catch(error) {
+        next(error);
     }
 }

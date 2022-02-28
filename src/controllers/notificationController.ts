@@ -7,7 +7,6 @@ import * as authService from "../services/authService";
 
 import GunDB from "../gun";
 import { randomUUID } from "crypto";
-import { join } from "path/posix";
 
 /**
  * Post Notification Controller Validator Config
@@ -73,11 +72,18 @@ export async function getRequest(req: Request, res: Response, next: any) {
 
     const list: any[] = [];
     patientRequestNode.once(async (node) => {
+      if(!node) {
+        res.json({
+          data: list,
+        });
+        return;
+      }
       const keys = Object.keys(node);
       for (const key of keys) {
         if (key === "_") continue;
-
         const d = await patientRequestNode.get(key).promise();
+        console.log(d.put);
+        // console.log()
         const hospitalId = d.put.hospitalId;
         const h = await hospitalsNode.get(hospitalId).promise();
         const details = {
@@ -96,5 +102,6 @@ export async function getRequest(req: Request, res: Response, next: any) {
     });
   } catch (err) {
     next(err);
+    console.log(err);
   }
 }
