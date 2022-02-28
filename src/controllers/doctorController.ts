@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import * as authService from '../services/authService';
 import { HospitalModel, HospitalSchema } from '../schemas/hospital';
 import * as ethService from "../services/ethService";
+import GunDB from "../gun";
 
 /**
  * Register Doctor User Controller Validator Config
@@ -124,18 +125,20 @@ export async function signUp(req: Request, res: Response, next: any) {
         }
 
         const tokenData = {
-            id: user.id,
+            id: user._id,
             email_id: user.email_id
         };
 
         const token = authService.generateAccessToken(tokenData);
+        console.log(user);
 
-        const hospital: HospitalSchema = await HospitalModel.findById(user.hospitalId);
+        const hospitalNode = GunDB.root.get("EHR-Hospital");
+        const hospitalDataNode = await hospitalNode.get(user.hospitalId).promise();
         res.status(200).send({
             id: user._id,
             name: user.name,
-            hospitalId: hospital._id,
-            hospitalName: hospital.name,
+            hospitalId: user.hospitalId,
+            hospitalName: hospitalDataNode.put.name,
             token
         })
     }
