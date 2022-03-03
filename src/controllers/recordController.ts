@@ -210,10 +210,9 @@ async function getDoctorHospitalName(records: any[]) {
 
 export const postRecordKeysValidation = {
   body: Joi.object({
-    //  data: Joi.array().items({
-    //      recordId: Joi.string().required(),
-    //      key: Joi.string().required(),
-    //  }).required()
+     data: Joi.string().required(),
+     notificationId: Joi.string().required(),
+     patientId: Joi.string().required()
   }),
 };
 
@@ -221,11 +220,17 @@ export async function postRecordKeys(req: any, res: any, next: any) {
   try {
     const { notificationId, patientId } = req.body;
     const d = req.body.data;
-    console.log(req.body);
     const data = JSON.parse(d);
     for (const rec of data) {
       const id = rec.recordId;
+      const recordDoc = await RecordModel.findById(id);
+      if(recordDoc) {
+        continue;
+      }
       const recordString = await ethService.getRecord(id);
+      if(recordString === "") {
+        continue;
+      }
       const record = JSON.parse(recordString);
       record.id = id;
       await RecordModel.create({

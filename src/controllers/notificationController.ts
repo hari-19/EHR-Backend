@@ -84,6 +84,9 @@ export async function getRequest(req: Request, res: Response, next: any) {
         const d = await patientRequestNode.get(key).promise();
         console.log(d.put);
         // console.log()
+        if(d.put == null) {
+          continue;
+        }
         const hospitalId = d.put.hospitalId;
         const h = await hospitalsNode.get(hospitalId).promise();
         const details = {

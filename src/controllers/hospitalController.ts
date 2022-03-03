@@ -15,6 +15,9 @@ export async function getHospitals(req: Request, res: Response, next: any) {
         if (key === "_") continue;
 
         const d = await hospitalNode.get(key).promise();
+        if(d.put == null) {
+          continue;
+        }
         const details = {
           id: d.put.id,
           name: d.put.name,
