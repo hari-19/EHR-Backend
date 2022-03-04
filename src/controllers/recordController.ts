@@ -210,17 +210,15 @@ async function getDoctorHospitalName(records: any[]) {
 
 export const postRecordKeysValidation = {
   body: Joi.object({
-     data: Joi.string().required(),
-     notificationId: Joi.string().required(),
-     patientId: Joi.string().required()
+     data: Joi.string().required()
   }),
 };
 
 export async function postRecordKeys(req: any, res: any, next: any) {
   try {
-    const { notificationId, patientId } = req.body;
-    const d = req.body.data;
-    const data = JSON.parse(d);
+    const d = JSON.parse(req.body.data);
+    const { notificationId, patientId } = d;
+    const data = d.data;
     for (const rec of data) {
       const id = rec.recordId;
       const recordDoc = await RecordModel.findById(id);
