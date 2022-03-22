@@ -4,6 +4,45 @@ import { Joi } from "express-validation";
 import { sendError } from "../helpers/errorHelper";
 import bcrypt from "bcrypt";
 import * as authService from "../services/authService";
+import GunDB from "../gun";
+import * as encryptionService from "../services/encryptionService";
+
+
+async function generateAndCheckIdPatientId(): Promise<string> {
+  const id: string = ( "0000000000" + (Math.floor(Math.random() * 10000000000)).toString()).slice(-10);
+  const patientNode = GunDB.root.get("EHR-Patient");
+  const val = await patientNode.get(id).promise();
+  console.log(val.put);
+  if(val.put) {
+    return generateAndCheckIdPatientId();
+  }
+  return id;
+}
+
+export async function registerPatient(req: Request, res: Response, next: any) {
+  const patientNode = GunDB.root.get("EHR-Patient");
+  const id = await generateAndCheckIdPatientId();
+  const keyPair = encryptionService.generateKey();
+  console.log(keyPair);
+  // generate salt to hash password
+  const salt = await bcrypt.genSalt(10);
+  // now we set user password to hashed password
+  const password = await bcrypt.hash(keyPair.privateKey, salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  patientNode.get(id).put({
+    id,
+    password: hashedPassword,
+    ethPublicKey: keyPair.publicKey
+  });
+
+  res.status(201);
+  res.json({
+    id,
+    keyPair,
+    password
+  });
+}
 
 /**
  * SignUp Patient User Controller Validator Config
@@ -12,14 +51,13 @@ export const signUpValidation = {
   body: Joi.object({
     id: Joi.string().required(),
     name: Joi.string().required(),
-    ethPublicKey: Joi.string().required(),
     contactNumber: Joi.string().required(),
     emailId: Joi.string().email(),
     address: Joi.string().required(),
-    password: Joi.string().required(),
     dob: Joi.string().isoDate().required(),
   }),
 };
+// 6414287577
 
 /**
  * Function to SignUp Patient Users Controller.
@@ -32,24 +70,32 @@ export async function signUp(req: Request, res: Response, next: any) {
       name,
       contactNumber,
       address,
-      password,
-      ethPublicKey,
       emailId,
       dob,
     } = req.body;
-    const sameUserCheck = await PatientModel.find({
-      name,
-      contactNumber,
-    });
 
-    if (sameUserCheck.length > 0) {
-      sendError(res, 400, "User Already Exist");
+    const patientNode = GunDB.root.get("EHR-Patient");
+    const p = await patientNode.get(id).promise();
+    let user;
+    if(p.put) {
+      user = {
+        ethPublicKey: p.put.ethPublicKey,
+        id,
+        password: p.put.password
+      }
     }
 
-    // generate salt to hash password
-    const salt = await bcrypt.genSalt(10);
-    // now we set user password to hashed password
-    const hashedPassword = await bcrypt.hash(password, salt);
+    if(!user) {
+      sendError(res, 400, "User not registered");
+      return;
+    }
+
+    const sameUserCheck = await PatientModel.findById(id);
+
+    if (sameUserCheck) {
+      sendError(res, 400, "User Already Exist");
+      return;
+    }
 
     const dobObj = new Date(dob);
     await PatientModel.create({
@@ -57,14 +103,13 @@ export async function signUp(req: Request, res: Response, next: any) {
       name,
       contactNumber,
       address,
-      password: hashedPassword,
-      ethPublicKey,
+      ethPublicKey: user.ethPublicKey,
       emailId,
       dob: dobObj,
     });
 
     res.status(201).send({
-      message: "Patient Created Successfully",
+      message: "Patient Added Successfully",
     });
   } catch (err) {
     next(err);
@@ -72,7 +117,7 @@ export async function signUp(req: Request, res: Response, next: any) {
 }
 
 /**
- * SignIn Doctor User Controller Validator Config
+ * SignIn Patient User Controller Validator Config
  */
 export const signInValidation = {
   body: Joi.object({
@@ -82,13 +127,23 @@ export const signInValidation = {
 };
 
 /**
- * Function to SignIn Doctor Users Controller.
+ * Function to SignIn Patient Users Controller.
  * id, password are the required body values for the controller.
  */
 export async function signIn(req: Request, res: Response, next: any) {
   try {
     const { id, password } = req.body;
-    const user = await PatientModel.findById(id);
+    const patientNode = GunDB.root.get("EHR-Patient");
+    const p = await patientNode.get(id).promise();
+    console.log(p.put);
+    let user;
+    if(p.put) {
+      user = {
+        ethPublicKey: p.put.ethPublicKey,
+        id,
+        password: p.put.password
+      }
+    }
 
     if (!user) {
       sendError(res, 400, "User doesn't exist");
@@ -102,9 +157,7 @@ export async function signIn(req: Request, res: Response, next: any) {
 
     const tokenData = {
       id: user.id,
-      name: user.name,
-      contactNumber: user.contactNumber,
-      address: user.address,
+      ethPublicKey: user.ethPublicKey
     };
 
     const token = authService.generateAccessToken(tokenData);

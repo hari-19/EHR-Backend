@@ -7,8 +7,7 @@ export interface PatientSchema {
     contactNumber: string,
     dob: Date,
     emailId: string,
-    address: string,
-    password: string
+    address: string
 }
 
 const patientSchema = new mongoose.Schema<PatientSchema>({
@@ -18,8 +17,7 @@ const patientSchema = new mongoose.Schema<PatientSchema>({
     ethPublicKey: String,
     contactNumber: String,
     emailId: String,
-    address: String,
-    password: String
+    address: String
 });
 
 export const PatientModel = mongoose.model<PatientSchema>('Patient', patientSchema);

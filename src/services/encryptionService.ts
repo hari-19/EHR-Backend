@@ -50,7 +50,8 @@ export const generateKey = () => {
         privateKeyEncoding: {
           type: 'pkcs1',
           format: 'pem',
-          cipher: 'aes-256-cbc',
+        //   cipher: 'aes-256-cbc',
+        //   passphrase: ''
         },
       })
     return {
@@ -59,6 +60,7 @@ export const generateKey = () => {
 };
 
 export const encryptAsymmetric = (data: string, publicKey: string) => {
+    console.log(publicKey, "ABC");
     const encryptedData = crypto.publicEncrypt(publicKey, Buffer.from(data));
     return encryptedData.toString('base64');
 }
@@ -66,7 +68,7 @@ export const encryptAsymmetric = (data: string, publicKey: string) => {
 export const decryptAsymmetric = (encryptedData: string, privateKey: string) => {
     const data = crypto.privateDecrypt({
             key: privateKey,
-            passphrase: ''
+            // passphrase: ''
         },
         Buffer.from(encryptedData, 'base64')
     );

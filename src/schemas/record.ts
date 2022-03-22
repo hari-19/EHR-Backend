@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as encryptionService from "../services/encryptionService";
 import * as recordService from "../services/recordService";
 import { PrescriptionRecord } from '../types/recordTypes';
+import GunDB from "../gun";
 export interface RecordSchema {
     _id: string,
     data: PrescriptionRecord,

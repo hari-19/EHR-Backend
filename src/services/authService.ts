@@ -8,7 +8,7 @@ import { UserRequest } from '../types/authTypes';
  * @returns JWT Token
  */
 export function generateAccessToken(obj: any) {
-    return jwt.sign(obj, process.env.TOKEN_SECRET, {expiresIn: '21600s'});
+    return jwt.sign(obj, process.env.TOKEN_SECRET, {expiresIn: '21600000s'});
 }
 
 /**

@@ -56,7 +56,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/recordKey.sol": "RecordKey"
+			"recordKey.sol": "RecordKey"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -70,7 +70,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"localhost/recordKey.sol": {
+		"recordKey.sol": {
 			"keccak256": "0x03dc338ef05f6a029c59c2e0ab55301bd84fe8a78b30fb4ae6c6e1535de219e3",
 			"urls": [
 				"bzz-raw://55bb11c9306769fa76130ce138bf277023dc19b6aa45b559235a345f054ebad5",

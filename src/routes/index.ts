@@ -2,7 +2,7 @@ import express   from 'express';
 
 // import { helloWorldController }  from '../controllers/helloWord';
 import * as ethController from '../controllers/ethController';
-// import * as encryptionController from '../controllers/encryptionController';
+import * as encryptionController from '../controllers/encryptionController';
 
 import { RecordModel } from "../schemas/record";
 
@@ -21,9 +21,9 @@ router.get('/eth/getBalance', ethController.getBalance);
 router.get('/eth/createAccount', ethController.createAccount);
 // router.post('/enc', encryptionController.encrypt);
 // router.post('/decry', encryptionController.decrypt);
-// router.post('/enc1', encryptionController.aEncrypt);
-// router.post('/decry1', encryptionController.aDecrypt);
-// router.get('/key', encryptionController.genKey);
+router.post('/enc1', encryptionController.aEncrypt);
+router.post('/decry1', encryptionController.aDecrypt);
+router.get('/key', encryptionController.genKey);
 router.get('/temp', authenticateJWT, async (req: any, res: any, next: any) => {
     try {
         await RecordModel.create({
