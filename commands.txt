@@ -1,0 +1,64 @@
+NODE 1
+
+geth --nousb --datadir=$pwd --syncmode "full" --port 30310 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "localhost" --http.port 8545 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0x6c00443851aC4c4781113d8c0A848Ab3dA040e7B"
+
+geth --nodiscover --networkid 2323 --datadir .ethereum/ --unlock "0x6c00443851aC4c4781113d8c0A848Ab3dA040e7B" --mine --rpc --rpcapi eth,net,web3 --rpcaddr
+NODE 2
+
+geth --nousb --datadir=$pwd --syncmode 'full' --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr 'localhost' --http.port 8546 --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "" --password password.txt 
+geth --nousb --datadir=$pwd --syncmode "full" --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "localhost" --http.port 8546 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0xAe5024B341D357127876f97e99D68aA126F0ecc2"
+
+
+NODE 3
+geth --nousb --datadir=$pwd --syncmode "full" --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "localhost" --http.port 8546 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0x0e51B4bE862Ca656C58B536E76c5e448Eb6F55f0"
+
+Doctor
+0x910931281A4b1B0768A3Deef23B8D532469Ad8Bc
+
+
+geth --nousb --datadir=$pwd --syncmode 'full' --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr 'localhost' --http.port 8546 --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "" --password password.txt 
+
+
+Node 1
+6c00443851aC4c4781113d8c0A848Ab3dA040e7B
+
+0x0e51B4bE862Ca656C58B536E76c5e448Eb6F55f0
+Ae5024B341D357127876f97e99D68aA126F0ecc2
+
+
+remixd -s "C:\Users\hari1\Desktop\Projects\EHR-backend\contracts" -u "https://remix.ethereum.org"
+
+-------------
+NODE 1
+geth --nousb --datadir=$pwd --syncmode "full" --port 30310 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "0.0.0.0" --http.port 8545 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0x6c00443851aC4c4781113d8c0A848Ab3dA040e7B"  --networkid 2323 --ipcpath=\\.\pipe\1\geth.ipc
+
+enode://3106388f2f7b736ab4942d6b93dc11bb7a14ea65c6cb55593d44aaadafee343189fb10ba5235328846856e580cb615e6b8afc53fe5558c659e0d6fbe96fa76b2@127.0.0.1:30310
+
+NODE 2
+
+geth --nousb --datadir=$pwd --syncmode "full" --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "0.0.0.0" --http.port 8546 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0xAe5024B341D357127876f97e99D68aA126F0ecc2"  --networkid 2323 --ipcpath=\\.\pipe\2\geth.ipc
+
+enode://e4e559131bd33d37503eea09a56bdfa6016da5582ac2ff8dc571c6dc25a01b63bc3bfa4f3bbc7fd35506e6a1fc6790e0c876ccd4dd95512c72ce4aba7913c14a@127.0.0.1:30311
+
+
+NODE 3
+geth --nousb --datadir=$pwd --syncmode "full" --port 30312 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr "0.0.0.0" --http.port 8547 --http.corsdomain https://remix.ethereum.org --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0x0e51B4bE862Ca656C58B536E76c5e448Eb6F55f0" --networkid 2323 --ipcpath=\\.\pipe\3\geth.ipc
+
+enode://c0960c62d6bb5248da9023600e1f66d7c64641cc1f017d410a62da5dc6ac6b0b56d22584ea2daecd503a88e77177c0ec55d5f17ac4910b12d6a2f9bda01e0b30@127.0.0.1:30312
+
+
+-------------------
+user contract
+0x26D5b1ad8b0A9E9F5b7c88b371864030BF16F7B2
+
+record contract
+0x1CEE5e0B52459EB2b23BCdb3e9f5D9404eBB4938
+
+doctor contract
+0x67dB3d76CA2BBb60d1Caf6068EE536D0dd3AA16F
+
+recordkey contract
+0x125F2Bab90bfC598f84f1A7Ac4cd40BD515F8AF9
+
+REMIX
+remixd -s "C:\Users\hari1\Desktop\Projects\EHR-backend\contracts" -u "https://remix.ethereum.org"
